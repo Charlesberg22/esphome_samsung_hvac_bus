@@ -433,12 +433,23 @@ namespace esphome
                 //   - Published power = 240W
                 //   - Verification: 1A × 240V = 240W ✓
                 //
+                
+                ESP_LOGD("samsung_bus",
+                  "Cmd8D raw: %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                  data[0], data[1], data[2], data[3], data[4], data[5], data[6],
+                  data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
+                
                 command8D.inverter_current_a = (float)data[8] / 10;                                              // Current in Amps (raw value / 10)
                 command8D.inverter_voltage_v = (float)data[10] * 2;                                              // Voltage in Volts (raw value * 2)
                 command8D.inverter_power_w = command8D.inverter_current_a * 0.1f * command8D.inverter_voltage_v; // Power in Watts
                 return {DecodeResultType::Processed, 14};
 
             case NonNasaCommand::CmdF0:
+                ESP_LOGD("samsung_bus",
+                  "CmdF0 raw: %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                  data[0], data[1], data[2], data[3], data[4], data[5], data[6],
+                  data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
+                
                 commandF0.outdoor_unit_freeze_protection = data[4] & 0b10000000;
                 commandF0.outdoor_unit_heating_overload = data[4] & 0b01000000;
                 commandF0.outdoor_unit_defrost_control = data[4] & 0b00100000;
@@ -459,6 +470,11 @@ namespace esphome
                 return {DecodeResultType::Processed, 14};
 
             case NonNasaCommand::CmdF3:
+                ESP_LOGD("samsung_bus",
+                  "CmdF3 raw: %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X",
+                  data[0], data[1], data[2], data[3], data[4], data[5], data[6],
+                  data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
+                
                 commandF3.inverter_max_frequency_hz = data[4];
                 commandF3.inverter_total_capacity_requirement_kw = (float)data[5] / 10;
                 commandF3.inverter_current_a = (float)data[8] / 10;
@@ -1086,3 +1102,4 @@ namespace esphome
         }
     } // namespace samsung_ac
 } // namespace esphome
+
