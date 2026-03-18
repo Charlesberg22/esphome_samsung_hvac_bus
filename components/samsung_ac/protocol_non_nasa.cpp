@@ -24,7 +24,7 @@ namespace esphome
         // Non-NASA control TX scheduling (turnaround delay)
         static bool pending_control_tx_ = false;
         static uint32_t pending_control_tx_due_ms_ = 0;
-        static uint32_t last_bus_mode_change = 0;
+        uint32_t last_bus_mode_change = 0;
 
         // Track cumulative energy calculation per device address
         // Note: Energy tracker persists across device reconnections. This is intentional to maintain
