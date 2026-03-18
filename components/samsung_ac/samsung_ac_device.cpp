@@ -10,6 +10,8 @@ namespace esphome
 {
   namespace samsung_ac
   {
+    extern uint32_t last_bus_mode_change;
+
     climate::ClimateTraits Samsung_AC_Climate::traits()
     {
       climate::ClimateTraits traits;
