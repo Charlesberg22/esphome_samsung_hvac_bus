@@ -17,8 +17,8 @@ namespace esphome
       traits.add_feature_flags(climate::CLIMATE_SUPPORTS_CURRENT_TEMPERATURE);
 
       traits.set_visual_temperature_step(1);
-      traits.set_visual_min_temperature(16);
-      traits.set_visual_max_temperature(30);
+      traits.set_visual_min_temperature(18); // edited from 16
+      traits.set_visual_max_temperature(25); // edited from 30
 
       traits.set_supported_modes({climate::CLIMATE_MODE_OFF,
                                   this->get_map_auto_to_heat_cool() ? climate::CLIMATE_MODE_HEAT_COOL : climate::CLIMATE_MODE_AUTO,
@@ -147,6 +147,12 @@ namespace esphome
         request.swing_mode = climateswingmode_to_swingmode(swingModeOpt.value());
       }
 
+      // Transmit guard in the case that mode etc. updated by wall panel too quickly
+      if (mode_changed && millis()) - this->last_bus_mode_change < 5000) {
+        ESP_LOGD(TAG, "Tx blocked due to recent external mode change");
+        return;
+      }
+      
       device->publish_request(request);
     }
 
