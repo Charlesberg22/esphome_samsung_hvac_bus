@@ -24,6 +24,7 @@ namespace esphome
         // Non-NASA control TX scheduling (turnaround delay)
         static bool pending_control_tx_ = false;
         static uint32_t pending_control_tx_due_ms_ = 0;
+        static uint32_t last_bus_mode_change = 0;
 
         // Track cumulative energy calculation per device address
         // Note: Energy tracker persists across device reconnections. This is intentional to maintain
@@ -899,6 +900,14 @@ namespace esphome
                     target->set_power(nonpacket_.src, nonpacket_.command20.power);
                     // TODO
                     target->set_water_heater_power(nonpacket_.src, false);
+                    // Detect mode change from bus (Rx)
+                    Mode new_mode = nonnasa_mode_to_mode(nonpacket_.command20.mode);
+                    static Mode last_mode = Mode::Auto;
+                    if (new_mode != last_mode) {
+                        last_mode = new_mode;
+                        last_bus_mode_change = millis();
+                        ESP_LOGD("samsung_bus", "RX mode change detected (bus)");
+                    }                    
                     target->set_mode(nonpacket_.src, nonnasa_mode_to_mode(nonpacket_.command20.mode));
                     // TODO
                     target->set_water_heater_mode(nonpacket_.src, nonnasa_water_heater_mode_to_mode(-0));
