@@ -158,7 +158,7 @@ namespace esphome
       }
 
       // Transmit guard in the case that mode etc. updated by wall panel too quickly
-      if (actual_mode_changed && (millis() - last_bus_mode_change < 1000)) {
+      if (actual_mode_change && (millis() - last_bus_mode_change < 1000)) {
         ESP_LOGD(TAG, "Tx blocked due to recent external mode change");
         return;
       }
