@@ -97,6 +97,14 @@ namespace esphome
       auto modeOpt = call.get_mode();
       const bool mode_changed = modeOpt.has_value();
 
+      // my add
+      bool actual_mode_change = false;
+      
+      if (mode_changed) {
+        actual_mode_change = (modeOpt.value() != this->mode);
+      }
+      // end
+
       if (mode_changed)
       {
         if (modeOpt.value() == climate::ClimateMode::CLIMATE_MODE_OFF)
@@ -130,8 +138,8 @@ namespace esphome
      
       else if (mode_changed)
       {
-        FanMode auto_fan = climatefanmode_to_fanmode(climate::CLIMATE_FAN_AUTO);
-        request.fan_mode = auto_fan;
+        FanMode high_fan = climatefanmode_to_fanmode(climate::CLIMATE_FAN_HIGH);
+        request.fan_mode = high_fan;
       }
       auto presetOpt = call.get_preset();
       if (presetOpt.has_value())
@@ -150,7 +158,7 @@ namespace esphome
       }
 
       // Transmit guard in the case that mode etc. updated by wall panel too quickly
-      if (mode_changed && (millis() - last_bus_mode_change < 5000)) {
+      if (actual_mode_changed && (millis() - last_bus_mode_change < 1000)) {
         ESP_LOGD(TAG, "Tx blocked due to recent external mode change");
         return;
       }
